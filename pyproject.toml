@@ -46,6 +46,7 @@ src_paths = ["src", "test"]
 
 [tool.pylint.main]
 fail-under = 8.0
+extension-pkg-allow-list = ["cv2"]
 
 [tool.pylint."messages control"]
 disable = [
@@ -54,4 +55,5 @@ disable = [
     "C0115", # Missing class docstring
     "C0116", # Missing function docstring
     "R0903", # Too few public methods
+    "E1101", # Module has no 'member' member
 ]

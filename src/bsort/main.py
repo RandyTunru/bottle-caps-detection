@@ -12,8 +12,8 @@ import typer
 import yaml
 
 from . import infer as infer_model
-from . import train as train_model
 from . import quantize as quantize_model
+from . import train as train_model
 
 app = typer.Typer(help="Bottle Cap Detection CLI.")
 
@@ -59,6 +59,7 @@ def train(
         seed=params["seed"],
     )
     print("Training Complete")
+
 
 @app.command()
 def quantize(

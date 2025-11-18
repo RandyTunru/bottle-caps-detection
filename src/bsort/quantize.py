@@ -2,11 +2,17 @@
 Module to handle ONNX INT8 quantization using Post-Training Quantization (PTQ).
 """
 
-import os
 import glob
+import os
+
 import cv2
 import numpy as np
-from onnxruntime.quantization import quantize_static, QuantType, CalibrationDataReader, QuantFormat
+from onnxruntime.quantization import (
+    CalibrationDataReader,
+    QuantFormat,
+    QuantType,
+    quantize_static,
+)
 
 
 class BottleCapDataReader(CalibrationDataReader):
@@ -23,33 +29,30 @@ class BottleCapDataReader(CalibrationDataReader):
         """
         self.image_files = glob.glob(os.path.join(image_folder, "*.jpg"))
         self.input_shape = input_shape
-        self.input_name = "images" 
+        self.input_name = "images"
         self.iterator = iter(self.image_files)
         print(f"Found {len(self.image_files)} calibration images.")
 
     def get_next(self):
         try:
             image_path = next(self.iterator)
-            
+
             image = cv2.imread(image_path)
             image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
+
             resized = cv2.resize(image_rgb, (self.input_shape[3], self.input_shape[2]))
-            
+
             preprocessed_image = (resized / 255.0).transpose(2, 0, 1).astype(np.float32)
-            
+
             input_tensor = np.expand_dims(preprocessed_image, axis=0)
-            
+
             return {self.input_name: input_tensor}
 
         except StopIteration:
-            return None  
+            return None
 
-def run_quantization(
-    fp32_model_path: str,
-    int8_model_path: str,
-    calibration_path: str
-):
+
+def run_quantization(fp32_model_path: str, int8_model_path: str, calibration_path: str):
     """
     Performs INT8 Post-Training Quantization.
     Args:
@@ -65,7 +68,7 @@ def run_quantization(
     print("--- Starting INT8 Quantization (this may take a few minutes) ---")
 
     calibrator = BottleCapDataReader(calibration_path)
-    
+
     quantize_static(
         model_input=fp32_model_path,
         model_output=int8_model_path,
@@ -73,8 +76,8 @@ def run_quantization(
         quant_format=QuantFormat.QDQ,
         weight_type=QuantType.QInt8,
         activation_type=QuantType.QInt8,
-        op_types_to_quantize=['Conv', 'MatMul'] # Key operators for YOLO
+        op_types_to_quantize=["Conv", "MatMul"],  # Key operators for YOLO
     )
-    
+
     print("--- Quantization Complete ---")
     print(f"INT8 model saved to: {int8_model_path}")
