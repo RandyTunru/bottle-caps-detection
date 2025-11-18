@@ -4,8 +4,8 @@ Module to handle training of YOLO models with W&B integration.
 
 import os
 
-from ultralytics import YOLO
 import wandb
+from ultralytics import YOLO
 
 
 def run_training(
