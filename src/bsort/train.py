@@ -60,7 +60,7 @@ def run_training(
         print("Exporting best model to ONNX...")
 
         exported_onnx_source_path = best_model.export(
-            format="onnx", imgsz=640, dynamic=True, opset=12, half=True, simplify=True
+            format="onnx", imgsz=640, dynamic=True, opset=12, simplify=True
         )
 
         print(
