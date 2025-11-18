@@ -1,0 +1,11 @@
+project_name: "Bottle-Cap-Detection"
+model_name: "yolo11n.pt" 
+epochs: 100
+batch_size: 4
+learning_rate: 0.01
+seed: 2510
+
+
+dataset_yaml: "bottle_cap_dataset/dataset.yaml"
+
+onnx_model_path: "model/best.onnx"

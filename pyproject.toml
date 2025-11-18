@@ -1,0 +1,55 @@
+[project]
+name = "bsort"
+version = "0.1.0"
+description = "Bottle cap detection MLOps pipeline using YOLOv11 and ONNX."
+authors = [{ name = "Randy", email = "randytunru@gmail.com" }]
+requires-python = ">=3.10"
+
+dependencies = [
+    #core
+    "torch==2.2.2",
+    "torchvision==0.17.2",
+    "torchaudio==2.2.2",
+    "ultralytics",
+    "onnxruntime",
+    "onnx>=1.12.0,<=1.19.1",  
+    "onnxslim>=0.1.71",
+    "numpy<2.0",           # Pinned for PyTorch 2.2.2 compatibility
+    "opencv-python",
+    "matplotlib",
+    "scipy",
+    "wandb",
+
+    #CLI & Config
+    "pyyaml",
+    "typer",
+
+    #linters & formatters
+    "pylint",
+    "black",
+    "isort",
+    "pytest",
+    "pytest-mock",
+]  
+
+[project.scripts]
+bsort = "bsort.main:app"
+
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.main]
+fail-under = 8.0
+
+[tool.pylint."messages control"]
+disable = [
+    "C0103", # Invalid constant name (e.g., 'x')
+    "C0114", # Missing module docstring
+    "C0115", # Missing class docstring
+    "C0116", # Missing function docstring
+    "R0903", # Too few public methods
+]

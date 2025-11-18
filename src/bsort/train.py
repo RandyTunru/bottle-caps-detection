@@ -1,0 +1,64 @@
+import os
+import wandb
+from ultralytics import YOLO
+
+
+def run_training(
+    model_name: str,
+    dataset_path: str,
+    project_name: str,
+    epochs: int,
+    batch_size: int,
+    onnx_model_path: str,
+    seed: int,
+):
+    """
+    Logs into W&B and runs the YOLO training process.
+    """
+    try:
+        wandb.login()
+        use_wandb = True
+    except Exception as e:
+        print(f"Could not log in to W&B. Skipping. Error: {e}")
+        use_wandb = False
+
+    # Load the model
+    model = YOLO(model_name)
+
+    results = model.train(
+        data=dataset_path,
+        epochs=epochs,
+        batch=batch_size,
+        imgsz=640,
+        project=project_name if use_wandb else None,
+        name=f"{model_name}-local",
+        exist_ok=True,
+        seed=seed,
+    )
+
+    best_model_path = results.save_dir / 'weights' / 'best.pt'
+    print(f"Best model saved to: {best_model_path}")
+
+    try:
+        best_model = YOLO(best_model_path)
+
+        print("Exporting best model to ONNX...")
+
+        exported_onnx_source_path = best_model.export(
+            format="onnx",
+            imgsz=640,
+            dynamic=True,
+            opset=12,
+            half=True,
+            simplify=True
+        )
+
+        print(f"Moving exported model from {exported_onnx_source_path} to {onnx_model_path}")
+
+        os.makedirs(os.path.dirname(onnx_model_path), exist_ok=True)
+
+        os.replace(exported_onnx_source_path, onnx_model_path)
+
+        print(f"Successfully exported and moved ONNX model to '{onnx_model_path}'")
+    except Exception as e:
+        print(f"Failed to export model to ONNX format. Error: {e}")

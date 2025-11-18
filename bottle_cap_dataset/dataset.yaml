@@ -1,0 +1,9 @@
+path: bottle_cap_dataset
+
+train: images/train
+val: images/val
+
+names:
+  0: light_blue
+  1: dark_blue
+  2: other
