@@ -13,6 +13,7 @@ import yaml
 
 from . import infer as infer_model
 from . import train as train_model
+from . import quantize as quantize_model
 
 app = typer.Typer(help="Bottle Cap Detection CLI.")
 
@@ -54,10 +55,37 @@ def train(
         project_name=params["project_name"],
         epochs=params["epochs"],
         batch_size=params["batch_size"],
-        onnx_model_path=params["onnx_model_path"],
+        onnx_model_path=params["onnx_fp32_model_path"],
         seed=params["seed"],
     )
     print("Training Complete")
+
+@app.command()
+def quantize(
+    config: Annotated[
+        str,
+        typer.Option(
+            "--config",
+            "-c",
+            help="Path to the settings.yaml file.",
+        ),
+    ] = "settings.yaml",
+):
+    """
+    Quantizes the FP32 ONNX model to INT8.
+    Args:
+        config (str): Path to the YAML config file.
+    Returns:
+        None
+    """
+    print(f"Loading config from {config}")
+    params = load_config(config)
+
+    quantize_model.run_quantization(
+        fp32_model_path=params["onnx_fp32_model_path"],
+        int8_model_path=params["onnx_int8_model_path"],
+        calibration_path=params["calibration_data_path"],
+    )
 
 
 @app.command()
@@ -92,7 +120,7 @@ def infer(
         raise typer.Exit(code=1)
 
     params = load_config(config)
-    model_path = params["onnx_model_path"]
+    model_path = params["onnx_int8_model_path"]
 
     if not os.path.exists(model_path):
         print(f"Error: ONNX model not found at {model_path}")

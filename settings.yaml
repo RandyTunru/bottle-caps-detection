@@ -8,4 +8,8 @@ seed: 2510
 
 dataset_yaml: "bottle_cap_dataset/dataset.yaml"
 
-onnx_model_path: "model/best.onnx"
+onnx_fp32_model_path: "model/best_fp32.onnx"
+
+onnx_int8_model_path: "model/best_int8.onnx"
+
+calibration_data_path: "bottle_cap_dataset/images/train"
