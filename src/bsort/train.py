@@ -1,6 +1,8 @@
 import os
-import wandb
+
 from ultralytics import YOLO
+
+import wandb
 
 
 def run_training(
@@ -36,7 +38,7 @@ def run_training(
         seed=seed,
     )
 
-    best_model_path = results.save_dir / 'weights' / 'best.pt'
+    best_model_path = results.save_dir / "weights" / "best.pt"
     print(f"Best model saved to: {best_model_path}")
 
     try:
@@ -45,15 +47,12 @@ def run_training(
         print("Exporting best model to ONNX...")
 
         exported_onnx_source_path = best_model.export(
-            format="onnx",
-            imgsz=640,
-            dynamic=True,
-            opset=12,
-            half=True,
-            simplify=True
+            format="onnx", imgsz=640, dynamic=True, opset=12, half=True, simplify=True
         )
 
-        print(f"Moving exported model from {exported_onnx_source_path} to {onnx_model_path}")
+        print(
+            f"Moving exported model from {exported_onnx_source_path} to {onnx_model_path}"
+        )
 
         os.makedirs(os.path.dirname(onnx_model_path), exist_ok=True)
 

@@ -1,7 +1,9 @@
 import os
+
 import pytest
 import torch
 import torch.nn as nn
+
 
 @pytest.fixture(scope="session")
 def dummy_onnx_model(tmp_path_factory):
@@ -9,6 +11,7 @@ def dummy_onnx_model(tmp_path_factory):
     Creates a minimal ONNX model file that can be loaded
     by onnxruntime for testing.
     """
+
     class DummyModel(nn.Module):
         def __init__(self):
             super().__init__()
@@ -22,11 +25,11 @@ def dummy_onnx_model(tmp_path_factory):
 
     dummy_input = torch.randn(1, 10)
     model = DummyModel()
-    
+
     torch.onnx.export(
         model,
         dummy_input,
-        str(model_path),  
+        str(model_path),
         input_names=["input"],
         output_names=["output"],
     )
