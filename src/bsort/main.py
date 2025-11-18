@@ -121,7 +121,7 @@ def infer(
         raise typer.Exit(code=1)
 
     params = load_config(config)
-    model_path = params["onnx_int8_model_path"]
+    model_path = params["onnx_int8_model_path"] if params["onnx_int8_model_path"] != "" else params["onnx_fp32_model_path"]
 
     if not os.path.exists(model_path):
         print(f"Error: ONNX model not found at {model_path}")

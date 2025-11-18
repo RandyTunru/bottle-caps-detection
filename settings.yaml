@@ -10,6 +10,6 @@ dataset_yaml: "bottle_cap_dataset/dataset.yaml"
 
 onnx_fp32_model_path: "model/best_fp32.onnx"
 
-onnx_int8_model_path: "model/best_int8.onnx"
+onnx_int8_model_path: "model/best_int8.onnx" # Leave empty ("") to use the FP32 model for inference and plan not to quantize
 
 calibration_data_path: "bottle_cap_dataset/images/train"
