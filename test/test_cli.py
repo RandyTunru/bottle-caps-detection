@@ -50,7 +50,9 @@ def test_cli_train_command(mocker, tmp_path):
         "epochs": 1,
         "batch_size": 1,
         "seed": 42,
-        "onnx_model_path": "models/fake.onnx",
+        "onnx_fp32_model_path": "models/fake_fp32.onnx",
+        "onnx_int8_model_path": "models/fake_int8.onnx",
+        "calibration_data_path": "fake/images/train",
     }
     config_path = tmp_path / "test_settings.yaml"
     with open(config_path, "w") as f:
@@ -79,10 +81,42 @@ def test_cli_train_command(mocker, tmp_path):
     )
 
     mock_model_instance.export.assert_called_once_with(
-        format="onnx", imgsz=640, dynamic=True, opset=12, half=True, simplify=True
+        format="onnx", imgsz=640, dynamic=True, opset=12, simplify=True
     )
 
     mock_model_instance.export.assert_called()
+
+
+def test_cli_quantize_command(mocker, tmp_path):
+    """
+    Tests the 'bsort quantize' command.
+    Args:
+        mocker: Pytest mocker fixture.
+        tmp_path: Pytest temporary path fixture.
+    Returns:
+        None
+    """
+
+    mock_quantize = mocker.patch("bsort.quantize.run_quantization")
+
+    config = {
+        "onnx_fp32_model_path": "models/fake_fp32.onnx",
+        "onnx_int8_model_path": "models/fake_int8.onnx",
+        "calibration_data_path": "fake/images/train",
+    }
+    config_path = tmp_path / "test_settings.yaml"
+    with open(config_path, "w") as f:
+        yaml.dump(config, f)
+
+    result = runner.invoke(app, ["quantize", "--config", str(config_path)])
+
+    assert result.exit_code == 0
+
+    mock_quantize.assert_called_once_with(
+        fp32_model_path="models/fake_fp32.onnx",
+        int8_model_path="models/fake_int8.onnx",
+        calibration_path="fake/images/train",
+    )
 
 
 def test_cli_infer_command(mocker, dummy_onnx_model, tmp_path):
@@ -103,7 +137,7 @@ def test_cli_infer_command(mocker, dummy_onnx_model, tmp_path):
     mock_results = [MagicMock()]
     mock_model_instance.return_value = mock_results
 
-    config = {"onnx_model_path": dummy_onnx_model}
+    config = {"onnx_int8_model_path": dummy_onnx_model}
     config_path = tmp_path / "test_settings.yaml"
     with open(config_path, "w") as f:
         yaml.dump(config, f)
