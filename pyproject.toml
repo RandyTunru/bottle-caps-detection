@@ -41,6 +41,8 @@ line-length = 88
 
 [tool.isort]
 profile = "black"
+known_first_party = ["bsort"]
+src_paths = ["src", "test"]
 
 [tool.pylint.main]
 fail-under = 8.0
