@@ -1,3 +1,7 @@
+"""
+Module to handle training of YOLO models with W&B integration.
+"""
+
 import os
 
 import wandb
@@ -15,6 +19,16 @@ def run_training(
 ):
     """
     Logs into W&B and runs the YOLO training process.
+    Args:
+        model_name (str): Name or path of the YOLO model to train.
+        dataset_path (str): Path to the dataset YAML file.
+        project_name (str): W&B project name for logging.
+        epochs (int): Number of training epochs.
+        batch_size (int): Batch size for training.
+        onnx_model_path (str): Path to save the exported ONNX model.
+        seed (int): Random seed for reproducibility.
+    Returns:
+        None
     """
     try:
         wandb.login()

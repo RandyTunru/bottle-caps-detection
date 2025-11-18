@@ -1,3 +1,10 @@
+"""
+CLI for Bottle Cap Detection: Training and Inference Commands.
+Examples:
+    python -m bsort.main train --config settings.yaml
+    python -m bsort.main infer --image path/to/image.jpg --config settings.yaml
+"""
+
 import os
 from typing import Annotated
 
@@ -32,6 +39,10 @@ def train(
 ):
     """
     Train a new model using the specified config file.
+    Args:
+        config (str): Path to the YAML config file.
+    Returns:
+        None
     """
     print(f"Loading config from {config}")
     params = load_config(config)
@@ -70,6 +81,11 @@ def infer(
 ):
     """
     Run inference on a single image using the production ONNX model.
+    Args:
+        image (str): Path to the input image.
+        config (str): Path to the YAML config file.
+    Returns:
+        None
     """
     if not os.path.exists(image):
         print(f"Error: Image file not found at {image}")

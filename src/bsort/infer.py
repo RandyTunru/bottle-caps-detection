@@ -1,3 +1,7 @@
+"""
+Module for running inference using a YOLO model.
+"""
+
 import os
 
 from ultralytics import YOLO
@@ -5,7 +9,12 @@ from ultralytics import YOLO
 
 def run_inference(model_path: str, image_path: str):
     """
-    Runs ONNX inference on a single image and saves the result.
+    Runs ONNX inference on a single image and saves the result to the outputs folder.
+    Args:
+        model_path (str): Path to the ONNX model file.
+        image_path (str): Path to the input image.
+    Returns:
+        None
     """
 
     model = YOLO(model_path)

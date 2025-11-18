@@ -1,3 +1,7 @@
+"""
+Test fixtures for the Bottle Cap Detection project.
+"""
+
 import os
 
 import pytest
@@ -10,6 +14,10 @@ def dummy_onnx_model(tmp_path_factory):
     """
     Creates a minimal ONNX model file that can be loaded
     by onnxruntime for testing.
+    Args:
+        tmp_path_factory: Pytest fixture to create temporary directories.
+    Returns:
+        str: Path to the created dummy ONNX model file.
     """
 
     class DummyModel(nn.Module):

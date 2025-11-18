@@ -1,3 +1,9 @@
+"""
+Tests for the CLI commands in bsort
+Examples:
+    pytest test/test_cli.py
+"""
+
 from unittest.mock import MagicMock, call
 
 import yaml
@@ -11,6 +17,11 @@ runner = CliRunner()
 def test_cli_train_command(mocker, tmp_path):
     """
     Tests the 'bsort train' command.
+    Args:
+        mocker: Pytest mocker fixture.
+        tmp_path: Pytest temporary path fixture.
+    Returns:
+        None
     """
 
     mocker.patch("wandb.login")
@@ -77,6 +88,12 @@ def test_cli_train_command(mocker, tmp_path):
 def test_cli_infer_command(mocker, dummy_onnx_model, tmp_path):
     """
     Tests the 'bsort infer' command.
+    Args:
+        mocker: Pytest mocker fixture.
+        dummy_onnx_model: Path to a dummy ONNX model fixture.
+        tmp_path: Pytest temporary path fixture.
+    Returns:
+        None
     """
 
     mock_yolo_class = mocker.patch("bsort.infer.YOLO")
@@ -112,6 +129,13 @@ def test_cli_infer_command(mocker, dummy_onnx_model, tmp_path):
 
 
 def test_cli_infer_no_image_fail():
+    """
+    Tests the 'bsort infer' command with a non-existent image path.
+    Args:
+        None
+    Returns:
+        None
+    """
 
     result = runner.invoke(app, ["infer", "--image", "nonexistent.jpg"])
 
